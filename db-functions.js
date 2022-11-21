@@ -29,7 +29,7 @@ const createQuestionsTable = async() => {
     id int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
     question varchar(255) NOT NULL
     );`);
-  return await output;
+  return output;
 }
 
 const createAnswersTable = async() => {
@@ -39,21 +39,35 @@ const createAnswersTable = async() => {
     answer varchar(255) NOT NULL,
     is_correct tinyint(1) NOT NULL
     );`);
-  return await output;
+  return output;
 }
 
 const insertQuestionsDef = async() => {
   let sqlQuery = await readFile('./sql-cmds/values-questions.sql');
   output = await query(sqlQuery);
-  return await output;
+  return output;
 }
 
 const insertAnswersDef = async() => {
   let sqlQuery = await readFile('./sql-cmds/values-answers.sql');
   output = await query(sqlQuery);
-  return await output;
+  return output;
+}
+
+const numberOfQuestions = async() => {
+  let output = await query(`SELECT COUNT(*) FROM questions`);
+  return Object.values(output[0])[0];
+}
+
+const chooseRandomQ = async() => {
+  let numberOfQ = await numberOfQuestions();
+  output = await query(`SELECT question_id, question, answer, is_correct FROM questions 
+    RIGHT JOIN answers ON (questions.id = answers.question_id)
+    WHERE question_id = ?;`,[Math.ceil(Math.random() * numberOfQ)]);
+  return output;
 }
 
 module.exports = {
-  initTables
+  initTables,
+  chooseRandomQ
 }
