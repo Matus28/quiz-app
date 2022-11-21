@@ -1,0 +1,27 @@
+{
+  "name": "quiz-app",
+  "version": "1.0.0",
+  "description": "You have to create a simple quiz website.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matus28/quiz-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Matus28/quiz-app/issues"
+  },
+  "homepage": "https://github.com/Matus28/quiz-app#readme",
+  "devDependencies": {
+    "express": "^4.18.2"
+  },
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
