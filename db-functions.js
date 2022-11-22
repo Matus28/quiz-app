@@ -111,10 +111,20 @@ const addQuestion = async (data) => {
   return 200;
 }
 
+const deleteQuestion = async (id) => {
+  output = await query(`DELETE FROM questions WHERE id = ?`, [id]);
+  if(output.message === 'success') {
+    output = await query(`DELETE FROM answers WHERE question_id = ?`, [id]);
+  }
+
+  return (output.message === "success") ? 200 : 400;
+}
+
 // Exporting functions as module
 module.exports = {
   initTables,
   chooseRandomQ,
   showQuestions,
-  addQuestion
+  addQuestion,
+  deleteQuestion
 }

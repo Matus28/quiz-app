@@ -74,6 +74,7 @@ const updateQuestions = async (url, options) => {
     questionDiv.appendChild(questionB);
   }
 
+  return document.querySelectorAll('.question-unit button');
 }
 
 const sendData = async (url, options, data) => {
@@ -92,13 +93,13 @@ const sendData = async (url, options, data) => {
 
 // EVENT Listeners
 window.addEventListener('DOMContentLoaded', async (event) => {
-  updateQuestions(url, options);
+  let deleteButtons = await updateQuestions(url, options);
 });
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   let dataToSend = await evaluateForm(form);
   let result = await sendData(url, options, dataToSend);
-  updateQuestions(url, options);
+  deleteButtons = await updateQuestions(url, options);
 
 })
