@@ -9,14 +9,67 @@ let options = {
   headers: {'Content-Type': 'application/json'}
 }
 
-
-// MAIN Loop --> running quiz in loop
-const mainLoop = async() => {
-  
+// UPDATE Question-div section (WHERE are questions appended)
+const updateQuestions = async() => {
+  let dataQuestions = await getQuestions(url, options);
+  createQuestionArticles(dataQuestions);
 }
 
+// GET questions from DB
+const getQuestions = async (url, options) => {
+  options.method = 'GET';
+  delete options.body;
 
-const evaluateForm = async (form) => {
+  try {
+    let response = await fetch(url, options);
+    if(response.status !== 200) throw new Error (`Couldn't establish connection with api: ${url}`);
+    let data = await response.json();
+    return data;  // --> returning all Questions from DB
+  } catch(err) {
+    console.log(err);
+    return;
+  }
+}
+
+const createQuestionArticles = (data) => {
+  manageQ.innerHTML = '';
+  for (let i = 0; i < data.length; i++) {
+    const questionDiv = document.createElement('div');
+    questionDiv.setAttribute('class', 'question-unit');
+    questionDiv.setAttribute('data-id', data[i]["id"]);
+    manageQ.appendChild(questionDiv);
+    const questionP = document.createElement('p');
+    questionP.textContent = data[i]["question"];
+    questionDiv.appendChild(questionP);
+    const questionB = document.createElement('button');
+    questionB.textContent = "delete";
+    questionB.addEventListener('click', async (event) => {
+      deleteQuestion(url + '/' + data[i]["id"], options, data[i]["id"]);
+      updateQuestions();
+    })
+    questionDiv.appendChild(questionB);
+  }
+}
+
+// DELETE questions shown on page
+const deleteQuestion = async (url, options, id) => {
+  options.method = 'DELETE';
+  delete options.body;
+  
+  fetch(url, options)
+  .then(response => {
+    console.log(response.status)
+    if(response.status !== 200) {
+      throw new Error (`Couldn't establish connection with api: ${url}`)
+    }
+    return;
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
+// RECEIVE and process data from FORM
+const evaluateForm = (form) => {
   const radioInp = document.querySelectorAll('input[name="correct-answer"]');
   let data = {
     "question": form.question.value,
@@ -39,44 +92,10 @@ const evaluateForm = async (form) => {
       },
     ]
   }
-
-  return await data;
+  return data;
 }
 
-const getQuestions = async (url, options) => {
-  options.method = 'GET';
-  delete options.method;
-
-  try {
-    let response = await fetch(url, options);
-    if(response.status !== 200) throw new Error (`Couldn't establish connection with api: ${url}`);
-    let data = await response.json();
-    return data;
-  } catch(err) {
-    console.log(err);
-    return;
-  }
-}
-
-const updateQuestions = async (url, options) => {
-  let data = await getQuestions(url, options);
-  
-  manageQ.innerHTML = '';
-  for (let i = 0; i < data.length; i++) {
-    const questionDiv = document.createElement('div');
-    questionDiv.setAttribute('class', 'question-unit');
-    manageQ.appendChild(questionDiv);
-    const questionP = document.createElement('p');
-    questionP.textContent = data[i]["question"];
-    questionDiv.appendChild(questionP);
-    const questionB = document.createElement('button');
-    questionB.textContent = "delete";
-    questionDiv.appendChild(questionB);
-  }
-
-  return document.querySelectorAll('.question-unit button');
-}
-
+// POST data from FORM to backend (server)
 const sendData = async (url, options, data) => {
   options.method = 'POST';
   options.body = JSON.stringify(data);
@@ -84,22 +103,21 @@ const sendData = async (url, options, data) => {
   try {
     let response = await fetch(url, options);
     if(response.status !== 200) throw new Error (`Couldn't establish connection with api: ${url}`);
-    return true;
   } catch(err) {
     console.log(err);
-    return false;
+    return;
   }
 }
 
-// EVENT Listeners
+// EVENT Listener - DOM Loaded
 window.addEventListener('DOMContentLoaded', async (event) => {
-  let deleteButtons = await updateQuestions(url, options);
+  updateQuestions();
 });
 
+// EVENT Listener - Form submitted
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   let dataToSend = await evaluateForm(form);
-  let result = await sendData(url, options, dataToSend);
-  deleteButtons = await updateQuestions(url, options);
-
+  sendData(url, options, dataToSend);
+  updateQuestions();
 })

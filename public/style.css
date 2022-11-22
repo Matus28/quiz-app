@@ -172,3 +172,35 @@ form button {
   min-width: 20%;
   justify-self: center;
 }
+
+.manage-question {
+  display: block;
+}
+
+.manage-question .question-unit {
+  display: grid;
+  grid-template-columns: 8fr 1fr;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+}
+
+.manage-question .question-unit:nth-child(1) {
+  border-top: none;
+}
+
+.manage-question .question-unit:nth-last-child() {
+  border-bottom: none;
+}
+
+.question-unit button {
+  height: 30px;
+  width: 60px;
+  align-self: center;
+  border: none;
+  background-color: inherit;
+  color:brown;
+}
+
+.question-unit button:hover {
+  color: rgba(165, 42, 42, 0.555)
+}

@@ -49,14 +49,25 @@ app.post('/api/questions', (req, res) => {
 })
 
 app.delete('/api/questions/:id', (req, res) => {
-  try {
+
     dbMethods.deleteQuestion(req.params.id)
     .then(data => {
-      res.status(data);
-    })
-  } catch(err) {
-    console.log(err);
-  }
+      console.log(data);
+      res.sendStatus(data);
+    }).catch(err => {
+      console.log(err);
+    });
+
+
+  // try {
+  //   dbMethods.deleteQuestion(req.params.id)
+  //   .then(data => {
+  //     res.status(200);
+  //   })
+  // } catch(err) {
+  //   console.log(err);
+  //   return;
+  // }
 })
 
 module.exports = app;

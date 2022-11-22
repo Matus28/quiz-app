@@ -82,7 +82,7 @@ const chooseRandomQ = async() => {
   let idRandom = Math.ceil(Math.random() * numberOfQ);
   let dataQuestion = await query(`SELECT id, question FROM questions WHERE id = ?;`,[idRandom]);
   let counter = 0;
-  console.log(numberOfQ);
+
   dataQuestion[0].answers = []
   
   for (let i = 4 * idRandom - 3; i <= 4 * idRandom; i++) {
@@ -104,7 +104,7 @@ const showQuestions = async() => {
 // ADDing new question
 const addQuestion = async (data) => {
   let outputQuestion = await query(`INSERT INTO questions (question) VALUES (?)`, [data.question]);
-  console.log(data["answers"])
+
   for (let i = 0; i < 4; i++) {
     let outputAnswers = await query(`INSERT INTO answers (question_id, answer, is_correct) VALUES (?, ?, ?)`, [outputQuestion.insertId, data["answers"][i][`answer_${i + 1}`], data["answers"][i]["is_correct"]]);
   }
@@ -116,7 +116,6 @@ const deleteQuestion = async (id) => {
   if(output.message === 'success') {
     output = await query(`DELETE FROM answers WHERE question_id = ?`, [id]);
   }
-
   return (output.message === "success") ? 200 : 400;
 }
 
