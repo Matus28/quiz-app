@@ -11,17 +11,41 @@ app.get('/game', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
 
+app.get('/questions', (req, res) => {
+  res.sendFile(__dirname + '/public/manage.html');
+});
+
 app.get('/api/game', (req, res) => {
   try {
-    dbMethods.initTables();
     dbMethods.chooseRandomQ()
+    .then(data => {
+      res.status(200).json(data[0]);
+    })
+  } catch(err) {
+    console.log(err);
+  }
+})
+
+app.get('/api/questions', (req, res) => {
+  try {
+    dbMethods.showQuestions()
     .then(data => {
       res.status(200).json(data);
     })
   } catch(err) {
     console.log(err);
   }
-  
+})
+
+app.post('/api/questions', (req, res) => {
+  try {
+    dbMethods.addQuestion(req.body)
+    .then(data => {
+      res.status(data);
+    })
+  } catch(err) {
+    console.log(err);
+  }
 })
 
 module.exports = app;

@@ -15,6 +15,7 @@ function query(sqlQuery, arrayOfValues) {
         console.log(err);
         reject(`Database error!`);
       }
+      rows.message = 'success';
       return resolve(rows);
     });
   });

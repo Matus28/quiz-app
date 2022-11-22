@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="./style.css">
+  <script type="module" src="./manage.js" defer></script>
+  <title>Manage questions</title>
+</head>
+<body>
+  <div class="container">
+    <h1 id="score">Manage questions</h1>
+    <div class="manage-question box">
+    </div>
+    <h1 id="score">Create a new question</h1>
+    <div class="create-question box">
+      <form>
+        <input type="text" name="question" placeholder="Type your question here" required>
+        <h2>Answers</h2>
+        <label for="answer1">#1</label>
+        <input type="text" name="answer1" placeholder="Type your answer here" required>
+        <input type="radio" name="correct-answer" class="correct-answer1" required>
+        <label for="answer1">#2</label>
+        <input type="text" name="answer2" placeholder="Type your answer here" required>
+        <input type="radio" name="correct-answer" class="correct-answer2">
+        <label for="answer1">#3</label>
+        <input type="text" name="answer3" placeholder="Type your answer here" required>
+        <input type="radio" name="correct-answer" class="correct-answer3">
+        <label for="answer1">#4</label>
+        <input type="text" name="answer4" placeholder="Type your answer here" required>
+        <input type="radio" name="correct-answer" class="correct-answer4">
+        <button type="submit">SUBMIT</button>
+      </form>
+    </div>
+    <a href="./index.html">Go back to the game</a>
+  </div>
+</body>
+</html>
