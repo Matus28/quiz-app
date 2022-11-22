@@ -14,6 +14,7 @@ function query(sqlQuery, arrayOfValues) {
       if(err) {
         console.log(err);
         reject(`Database error!`);
+        return;
       }
       return resolve(rows);
     });
