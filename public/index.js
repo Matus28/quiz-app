@@ -15,7 +15,7 @@ const requestQuestion = async(url, options) => {
     let response = await fetch(url, options);
     if(response.status !== 200) throw new Error (`Couldn't establish connection with api: ${url}`);
     let data = await response.json();
-    return await createButtons(data);
+    return await data;
   } catch(err) {
     console.log(err);
     return;
@@ -24,25 +24,26 @@ const requestQuestion = async(url, options) => {
 
 // Create buttons + question
 const createButtons = (data) => {
-  return new Promise((resolve, reject) => {
-    updateScore();
-    document.getElementsByClassName('question-box')[0].innerHTML = '';
-    document.getElementsByClassName('answers-box')[0].innerHTML = '';
-    const dataAnswers = data.answers;
-    const questionH = document.createElement('h2');
-    questionH.textContent = data.question;
-    question.appendChild(questionH);
-  
-    for (let i = 0; i < 4; i++) {
-      let answerDiv = document.createElement('button');
-      answerDiv.setAttribute('id', dataAnswers[i][0].id);
-      answerDiv.textContent = dataAnswers[i][0][`answer_${i + 1}`];
-      answerDiv.setAttribute('data-correct', dataAnswers[i][0].is_correct);
-      answerDiv.setAttribute('class', 'answer not-selected');
-      answer.appendChild(answerDiv);
-    }
-    return resolve(document.querySelectorAll('button'));
-  });
+  updateScore();
+  document.getElementsByClassName('question-box')[0].innerHTML = '';
+  document.getElementsByClassName('answers-box')[0].innerHTML = '';
+  const dataAnswers = data.answers;
+  const questionH = document.createElement('h2');
+  questionH.textContent = data.question;
+  question.appendChild(questionH);
+
+  for (let i = 0; i < 4; i++) {
+    let answerDiv = document.createElement('button');
+    answerDiv.setAttribute('id', dataAnswers[i][0].id);
+    answerDiv.textContent = dataAnswers[i][0][`answer_${i + 1}`];
+    answerDiv.setAttribute('data-correct', dataAnswers[i][0].is_correct);
+    answerDiv.setAttribute('class', 'answer not-selected');
+    answerDiv.addEventListener('click', (event) => {
+      evaluateChoice(answerDiv);
+      setTimeout(mainLoop, 3000);
+    })
+    answer.appendChild(answerDiv);
+  }
 }
 
 // UPDATE actual score 
@@ -61,7 +62,8 @@ const updateScore = (method) => {
 }
 
 // RESULT of choice
-const evaluateChoice = (button, buttons) => {
+const evaluateChoice = (button) => {
+  const buttons = document.querySelectorAll('button.answer');
   button.classList.remove('not-selected');
   button.classList.add('selected');
   if(button.getAttribute('data-correct') === '1') {
@@ -72,22 +74,17 @@ const evaluateChoice = (button, buttons) => {
         bttn.classList.remove('not-selected');
         bttn.classList.add('selected');
       }
-    })
+    });
   }
   buttons.forEach((button) => {
     button.setAttribute('disabled', 'disabled')
-  }) 
+  }); 
 }
 
 // MAIN Loop --> running quiz in loop
 const mainLoop = async() => {
-  const buttons = await requestQuestion(url + '/api/game', options);
-  buttons.forEach((button) => {
-    button.addEventListener('click', (event) => {
-    evaluateChoice(button, buttons);
-    setTimeout(mainLoop, 3000);
-    });
-  });
+  const dataQuestion = await requestQuestion(url + '/api/game', options);
+  createButtons(dataQuestion);
 }
 
 // EVENT Listeners

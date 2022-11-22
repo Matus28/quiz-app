@@ -69,20 +69,15 @@ const insertAnswersDef = async() => {
   return output;
 }
 
-// COUNTing number of questions
-const numberOfQuestions = async() => {
-  output = await query(`SELECT COUNT(*) FROM questions`);
-  return Object.values(output[0])[0];
-}
-
 // Selecting random question
 const chooseRandomQ = async() => {
-  let tableCreated = await initTables();
-  let numberOfQ = await numberOfQuestions();
-  let idRandom = Math.ceil(Math.random() * numberOfQ);
+  const tableCreated = await initTables();
+  const currentIds = await query(`SELECT id FROM questions`);
+  const idRandom = currentIds[Math.floor(Math.random() * currentIds.length)]["id"];
   let dataQuestion = await query(`SELECT id, question FROM questions WHERE id = ?;`,[idRandom]);
   let counter = 0;
 
+  console.log(dataQuestion);
   dataQuestion[0].answers = []
   
   for (let i = 4 * idRandom - 3; i <= 4 * idRandom; i++) {
